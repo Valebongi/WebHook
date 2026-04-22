@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>WP Lead API — últimos requests</title>
+<style>
+  :root {
+    --bg:#0f172a; --panel:#1e293b; --border:#334155;
+    --text:#e2e8f0; --muted:#94a3b8;
+    --ok:#22c55e; --pending:#eab308; --dup:#f97316; --err:#ef4444;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+         background:var(--bg); color:var(--text); font-size:13px; }
+  header { padding:14px 18px; background:var(--panel); border-bottom:1px solid var(--border);
+           display:flex; justify-content:space-between; align-items:center; }
+  header h1 { margin:0; font-size:16px; font-weight:600; }
+  header .meta { color:var(--muted); font-size:12px; }
+  main { padding:18px; }
+  .entry { background:var(--panel); border:1px solid var(--border); border-left:4px solid var(--muted);
+           border-radius:6px; padding:12px 14px; margin-bottom:10px; }
+  .entry.created   { border-left-color: var(--ok); }
+  .entry.pending   { border-left-color: var(--pending); }
+  .entry.duplicate { border-left-color: var(--dup); }
+  .entry.invalid   { border-left-color: var(--err); }
+  .entry.error     { border-left-color: var(--err); }
+  .row1 { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:8px; }
+  .badge { padding:2px 8px; border-radius:4px; font-weight:600; font-size:11px; text-transform:uppercase; }
+  .badge.created   { background:rgba(34,197,94,.18);  color:#86efac; }
+  .badge.pending   { background:rgba(234,179,8,.18);  color:#fde047; }
+  .badge.duplicate { background:rgba(249,115,22,.18); color:#fdba74; }
+  .badge.invalid   { background:rgba(239,68,68,.18);  color:#fca5a5; }
+  .badge.error     { background:rgba(239,68,68,.25);  color:#fca5a5; }
+  .http { color:var(--muted); font-size:11px; }
+  .ts   { color:var(--muted); font-size:11px; margin-left:auto; }
+  .cols { display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+  .col h3 { margin:0 0 6px; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+  .col pre { margin:0; padding:8px 10px; background:#0b1220; border:1px solid var(--border); border-radius:4px;
+             font-size:12px; white-space:pre-wrap; word-break:break-word; }
+  .msg { margin-top:8px; font-size:12px; color:var(--muted); }
+  .empty { text-align:center; padding:40px; color:var(--muted); }
+  .prod-info { color:#86efac; }
+  .prod-no   { color:#fca5a5; }
+</style>
+</head>
+<body>
+<header>
+  <h1>WP Lead API — requests recibidos</h1>
+  <div class="meta">
+    auto-refresh 3s · <span id="count">0</span> entries ·
+    <span id="status">conectando…</span>
+  </div>
+</header>
+<main id="list"><div class="empty">Esperando requests…</div></main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+function fmtProducto(p) {
+  if (!p) return '<span class="prod-no">(sin match de producto)</span>';
+  return `<span class="prod-info">`
+    + `Id=<b>${p.Id}</b> · <b>${escapeHtml(p.Nombre)}</b><br>`
+    + `CodigoLanzamiento=<b>${escapeHtml(p.CodigoLanzamiento ?? '')}</b> · `
+    + `CodigoLinkedin=${escapeHtml(p.CodigoLinkedin ?? '')} · `
+    + `CostoBase=${p.CostoBase ?? ''}`
+    + `</span>`;
+}
+
+function escapeHtml(s) {
+  if (s === null || s === undefined) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderEntry(e) {
+  const kind = e.result || 'error';
+  const badgeText = kind.toUpperCase();
+  let extra = '';
+  if (e.oportunidad_id) extra += ` · OppId=<b>${e.oportunidad_id}</b>`;
+  if (e.persona_id)     extra += ` · PersonaId=<b>${e.persona_id}</b>`;
+  if (e.pendiente_id)   extra += ` · PendienteId=<b>${e.pendiente_id}</b>`;
+
+  return `
+    <div class="entry ${kind}">
+      <div class="row1">
+        <span class="badge ${kind}">${badgeText}</span>
+        <span class="http">HTTP ${e.http_status}</span>
+        <span>${extra}</span>
+        <span class="ts">${escapeHtml(e.timestamp)}</span>
+      </div>
+      <div class="cols">
+        <div class="col">
+          <h3>Payload recibido</h3>
+          <pre>${escapeHtml(JSON.stringify(e.payload, null, 2))}</pre>
+        </div>
+        <div class="col">
+          <h3>Producto matcheado</h3>
+          <pre>${fmtProducto(e.producto_match)}</pre>
+        </div>
+      </div>
+      ${e.message ? `<div class="msg">→ ${escapeHtml(e.message)}</div>` : ''}
+    </div>
+  `;
+}
+
+async function refresh() {
+  try {
+    const r = await fetch('/requests/recent?limit=50', { cache: 'no-store' });
+    const data = await r.json();
+    const entries = data.entries || [];
+    $('count').textContent = entries.length;
+    $('status').textContent = 'ok';
+    $('status').style.color = '#86efac';
+    const list = $('list');
+    if (entries.length === 0) {
+      list.innerHTML = '<div class="empty">Esperando requests…</div>';
+    } else {
+      list.innerHTML = entries.map(renderEntry).join('');
+    }
+  } catch (e) {
+    $('status').textContent = 'error: ' + e.message;
+    $('status').style.color = '#fca5a5';
+  }
+}
+
+refresh();
+setInterval(refresh, 3000);
+</script>
+</body>
+</html>
