@@ -88,7 +88,7 @@ def process_wordpress_generic_lead(payload: WordpressLeadGenericPayload) -> dict
         id_pais=id_pais,
         producto_id=int(producto["Id"]),
         codigo_lanzamiento=producto["CodigoLanzamiento"],
-        costo_base=float(producto["CostoBase"]) if producto.get("CostoBase") is not None else None,
+        costo_base=None,  # No insertar Inversion para leads genéricos sin producto específico
         fecha_formulario=payload.fecha_formulario,
     )
 
