@@ -84,6 +84,7 @@ function renderEntry(e) {
       <div class="row1">
         <span class="badge ${kind}">${badgeText}</span>
         <span class="http">HTTP ${e.http_status}</span>
+        <span class="http">${escapeHtml(e.endpoint || '/leads')}</span>
         <span>${extra}</span>
         <span class="ts">${escapeHtml(e.timestamp)}</span>
       </div>

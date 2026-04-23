@@ -16,6 +16,7 @@ _lock = threading.Lock()
 
 def record(
     *,
+    endpoint: str = "/leads",
     payload_raw: Any,
     http_status: int,
     result: str,                # "created" | "pending" | "duplicate" | "invalid" | "error"
@@ -28,6 +29,7 @@ def record(
     """Registra un request. Se llama desde el endpoint después de procesar."""
     entry = {
         "timestamp":       datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "endpoint":        endpoint,
         "http_status":     http_status,
         "result":          result,
         "payload":         _sanitize_payload(payload_raw),

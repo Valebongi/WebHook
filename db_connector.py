@@ -250,6 +250,56 @@ def fetch_pais_por_prefijo(prefijo_sin_mas: int) -> Optional[dict]:
         return None
 
 
+def fetch_producto_generico(
+    producto_id: int | None,
+    codigo_lanzamiento: str,
+) -> Optional[dict]:
+    """Busca un producto activo para el endpoint genérico.
+
+    Prioridad:
+      1. `producto_id` si está configurado.
+      2. `codigo_lanzamiento` como fallback.
+    """
+    sql_by_id = text(
+        """
+        SELECT TOP (1) Id, Nombre, CodigoLanzamiento, CodigoLinkedin, CostoBase
+        FROM adm.Producto
+        WHERE Id = :id
+          AND Estado = 1
+        """
+    )
+    sql_by_cl = text(
+        """
+        SELECT TOP (1) Id, Nombre, CodigoLanzamiento, CodigoLinkedin, CostoBase
+        FROM adm.Producto
+        WHERE CodigoLanzamiento COLLATE DATABASE_DEFAULT = :cl COLLATE DATABASE_DEFAULT
+          AND Estado = 1
+        ORDER BY Id DESC
+        """
+    )
+    try:
+        with get_engine().connect() as conn:
+            if producto_id is not None:
+                row = conn.execute(sql_by_id, {"id": producto_id}).mappings().first()
+                if row:
+                    return dict(row)
+
+            clean_cl = (codigo_lanzamiento or "").strip()
+            if clean_cl:
+                row = conn.execute(sql_by_cl, {"cl": clean_cl}).mappings().first()
+                if row:
+                    return dict(row)
+        return None
+    except SQLAlchemyError as exc:
+        logger.error(
+            "Error buscando producto genérico (id=%s, cl=%s): %s",
+            producto_id,
+            codigo_lanzamiento,
+            exc,
+        )
+        raise
+
+
 # ── Dedupe ────────────────────────────────────────────────────────────────────
 
 def exists_oportunidad_activa(email: str, codigo_lanzamiento: str) -> Optional[int]:

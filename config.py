@@ -9,6 +9,17 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
+def _get_int_env(name: str, default: int | None = None) -> int | None:
+    """Lee un entero desde env; devuelve default si está vacío o es inválido."""
+    raw = os.getenv(name)
+    if raw is None or str(raw).strip() == "":
+        return default
+    try:
+        return int(str(raw).strip())
+    except ValueError:
+        return default
+
 # ── Database ──────────────────────────────────────────────────────────────────
 DB_CONFIG = {
     "server":   os.getenv("DB_SERVER",   "142.93.50.164"),
@@ -58,3 +69,14 @@ DEFAULT_IDOCURRENCIA = 1
 
 # adm.Moneda.Id = 4 corresponde a "Dólares Americanos / USD" (verificado en QA).
 DEFAULT_ID_MONEDA_USD = 4
+
+# ── Formulario WP 2 (sin producto en payload) ───────────────────────────────
+# Usar un producto "comodín" activo en adm.Producto para crear oportunidades
+# cuando el formulario no provee nombre/código de curso.
+GENERIC_PRODUCTO_ID = _get_int_env("GENERIC_PRODUCTO_ID")
+GENERIC_PRODUCTO_CODIGO_LANZAMIENTO = os.getenv(
+    "GENERIC_PRODUCTO_CODIGO_LANZAMIENTO", "PROD-GENERICO-WP2"
+)
+GENERIC_PRODUCTO_NOMBRE = os.getenv(
+    "GENERIC_PRODUCTO_NOMBRE", "GENERICO - Formulario WP 2"
+)

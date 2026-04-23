@@ -17,7 +17,9 @@ from fastapi.responses import HTMLResponse, JSONResponse
 
 from config import CORS_ORIGINS, WORDPRESS_API_KEY
 from models.wordpress_lead import WordpressLeadPayload
+from models.wordpress_lead_generic import WordpressLeadGenericPayload
 from services import request_log
+from services.lead_generic_service import process_wordpress_generic_lead
 from services.lead_service import process_wordpress_lead
 
 logging.basicConfig(
@@ -79,6 +81,7 @@ async def create_lead(request: Request):
         raw_body: dict[str, Any] = await request.json()
     except Exception as exc:
         request_log.record(
+            endpoint="/leads",
             payload_raw={"_error_parsing_json": str(exc)},
             http_status=400,
             result="invalid",
@@ -92,6 +95,7 @@ async def create_lead(request: Request):
     except Exception as exc:
         errors = getattr(exc, "errors", lambda: [{"msg": str(exc)}])()
         request_log.record(
+            endpoint="/leads",
             payload_raw=raw_body,
             http_status=422,
             result="invalid",
@@ -108,6 +112,7 @@ async def create_lead(request: Request):
     except Exception as exc:
         logger.exception("Error procesando lead de WP")
         request_log.record(
+            endpoint="/leads",
             payload_raw=raw_body,
             http_status=500,
             result="error",
@@ -121,6 +126,7 @@ async def create_lead(request: Request):
     # Dispatch por tipo de resultado
     if outcome["result"] == "created":
         request_log.record(
+            endpoint="/leads",
             payload_raw=raw_body,
             http_status=201,
             result="created",
@@ -143,6 +149,7 @@ async def create_lead(request: Request):
         )
     if outcome["result"] == "pending":
         request_log.record(
+            endpoint="/leads",
             payload_raw=raw_body,
             http_status=202,
             result="pending",
@@ -162,6 +169,7 @@ async def create_lead(request: Request):
         )
     if outcome["result"] == "duplicate":
         request_log.record(
+            endpoint="/leads",
             payload_raw=raw_body,
             http_status=409,
             result="duplicate",
@@ -176,6 +184,120 @@ async def create_lead(request: Request):
                 "oportunidad_id": outcome["oportunidad_id"],
                 "producto":       outcome.get("producto_match"),
                 "message":        outcome["message"],
+            },
+        )
+    raise HTTPException(status_code=500, detail=f"Resultado no reconocido: {outcome}")
+
+
+@app.post(
+    "/leads-generic",
+    dependencies=[Depends(require_api_key)],
+    summary="Recibe un lead desde formulario WP sin producto y crea oportunidad.",
+)
+async def create_lead_generic(request: Request):
+    """Valida y procesa el payload del formulario genérico."""
+    try:
+        raw_body: dict[str, Any] = await request.json()
+    except Exception as exc:
+        request_log.record(
+            endpoint="/leads-generic",
+            payload_raw={"_error_parsing_json": str(exc)},
+            http_status=400,
+            result="invalid",
+            message=f"JSON inválido: {exc}",
+        )
+        raise HTTPException(status_code=400, detail=f"JSON inválido: {exc}")
+
+    try:
+        payload = WordpressLeadGenericPayload.model_validate(raw_body)
+    except Exception as exc:
+        errors = getattr(exc, "errors", lambda: [{"msg": str(exc)}])()
+        request_log.record(
+            endpoint="/leads-generic",
+            payload_raw=raw_body,
+            http_status=422,
+            result="invalid",
+            message="Payload inválido: " + "; ".join(
+                f"{'.'.join(str(x) for x in e.get('loc', []))}: {e.get('msg', '')}"
+                for e in errors
+            ),
+        )
+        raise HTTPException(status_code=422, detail=errors)
+
+    try:
+        outcome = process_wordpress_generic_lead(payload)
+    except Exception as exc:
+        logger.exception("Error procesando lead genérico de WP")
+        request_log.record(
+            endpoint="/leads-generic",
+            payload_raw=raw_body,
+            http_status=500,
+            result="error",
+            message=f"Error interno: {exc}",
+        )
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error interno procesando el lead genérico: {exc}",
+        )
+
+    if outcome["result"] == "created":
+        request_log.record(
+            endpoint="/leads-generic",
+            payload_raw=raw_body,
+            http_status=201,
+            result="created",
+            producto_match=outcome.get("producto_match"),
+            oportunidad_id=outcome["oportunidad_id"],
+            persona_id=outcome["persona_id"],
+            message="Oportunidad creada",
+        )
+        return JSONResponse(
+            status_code=201,
+            content={
+                "status": "created",
+                "oportunidad_id": outcome["oportunidad_id"],
+                "persona_id": outcome["persona_id"],
+                "codigo_lanzamiento": outcome["codigo_lanzamiento"],
+                "auto_assigned_personal_id": outcome.get("auto_assigned_personal_id"),
+                "producto": outcome.get("producto_match"),
+                "message": "Oportunidad creada correctamente.",
+            },
+        )
+    if outcome["result"] == "pending":
+        request_log.record(
+            endpoint="/leads-generic",
+            payload_raw=raw_body,
+            http_status=202,
+            result="pending",
+            pendiente_id=outcome["pendiente_id"],
+            message=outcome["motivo"],
+        )
+        return JSONResponse(
+            status_code=202,
+            content={
+                "status": "pending",
+                "pendiente_id": outcome["pendiente_id"],
+                "motivo": outcome["motivo"],
+                "message": "Lead guardado en pendientes para revisión manual.",
+            },
+        )
+    if outcome["result"] == "duplicate":
+        request_log.record(
+            endpoint="/leads-generic",
+            payload_raw=raw_body,
+            http_status=409,
+            result="duplicate",
+            producto_match=outcome.get("producto_match"),
+            oportunidad_id=outcome["oportunidad_id"],
+            message=outcome["message"],
+        )
+        return JSONResponse(
+            status_code=409,
+            content={
+                "status": "duplicate",
+                "oportunidad_id": outcome["oportunidad_id"],
+                "producto": outcome.get("producto_match"),
+                "message": outcome["message"],
             },
         )
     raise HTTPException(status_code=500, detail=f"Resultado no reconocido: {outcome}")
