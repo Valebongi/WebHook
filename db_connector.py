@@ -94,7 +94,7 @@ def _lookup_diccionario_form_name(conn, db_name: str, nombre: str) -> Optional[d
     tbl = f"[{db_name}].adm.DiccionarioFormName"
     sql = text(
         f"""
-        SELECT TOP (1) Error, Correcto
+        SELECT Error, Correcto
         FROM {tbl}
         WHERE Activo = 1
         ORDER BY Id DESC
@@ -138,7 +138,12 @@ def _search_producto_por_token_exacto(conn, db_name: str, token: str) -> Optiona
         """
     )
     row = conn.execute(sql, {"token": token}).mappings().first()
-    return dict(row) if row else None
+    if not row:
+        return None
+    d = dict(row)
+    d["_match_step"] = "exacto_token"
+    d["_db"] = db_name
+    return d
 
 
 def _search_producto_fuzzy_en_db(conn, db_name: str, nombre: str) -> Optional[dict]:
@@ -371,7 +376,7 @@ def fetch_producto_por_nombre(nombre: str) -> Optional[dict]:
 
             logger.info(
                 "Producto en catálogo (%s) paso=%s score=%s id=%s nombre='%s' (buscado: '%s')",
-                PRODUCTS_DB_NAME, catalogo["_match_step"],
+                PRODUCTS_DB_NAME, catalogo.get("_match_step", "desconocido"),
                 catalogo.get("_match_score"),
                 catalogo["Id"], catalogo["Nombre"], clean,
             )

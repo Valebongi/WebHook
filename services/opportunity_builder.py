@@ -297,20 +297,20 @@ def _insert_inversion(
     costo_base: float,
     now: datetime,
 ) -> int:
-    # Schema real de adm.Inversion (verificado en QA): no tiene columna `Moneda`
-    # sino `IdMoneda` (FK a adm.Moneda, 4 = USD). `Cupo` es NOT NULL y no tiene
+    # Schema real de adm.Inversion: requiere ambas columnas `Moneda` e
+    # `IdMoneda` (FK a adm.Moneda, 4 = USD). `Cupo` es NOT NULL y no tiene
     # default visible; se inserta 0 igual que las filas creadas por el SP.
     from config import DEFAULT_ID_MONEDA_USD
     cur.execute(
         """
         INSERT INTO adm.Inversion
-            (IdProducto, IdOportunidad, CostoTotal, IdMoneda, DescuentoPorcentaje,
-             CostoOfrecido, Cupo, Estado, IdMigracion,
+            (IdProducto, IdOportunidad, CostoTotal, Moneda, IdMoneda,
+             DescuentoPorcentaje, CostoOfrecido, Cupo, Estado, IdMigracion,
              FechaCreacion, UsuarioCreacion, FechaModificacion, UsuarioModificacion)
         OUTPUT inserted.Id
-        VALUES (?, ?, ?, ?, NULL, ?, 0, 1, NULL, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, NULL, ?, 0, 1, NULL, ?, ?, ?, ?)
         """,
-        producto_id, opp_id, costo_base, DEFAULT_ID_MONEDA_USD, costo_base,
+        producto_id, opp_id, costo_base, 'USD', DEFAULT_ID_MONEDA_USD, costo_base,
         now, AUDIT_USER, now, AUDIT_USER,
     )
     row = cur.fetchone()
