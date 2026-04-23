@@ -8,7 +8,10 @@ Expone:
 """
 
 import logging
+import re
+import unicodedata
 from contextlib import contextmanager
+from difflib import SequenceMatcher
 from typing import Optional
 
 import pyodbc
@@ -18,6 +21,162 @@ from sqlalchemy.exc import SQLAlchemyError
 from config import DB_CONFIG
 
 logger = logging.getLogger(__name__)
+
+
+_PUNCT_RE = re.compile(r"[^a-z0-9\s]")
+_SPACE_RE = re.compile(r"\s+")
+_STOPWORDS = {
+    "de", "del", "la", "las", "el", "los", "y", "e", "en", "con", "para",
+    "por", "a", "al", "un", "una", "the", "and", "or",
+}
+_PREFIXES = {
+    "pep", "pae", "cep",
+}
+
+
+def _normalize_nombre_producto(value: str) -> str:
+    """Normaliza texto para comparar nombres con ruido editorial."""
+    txt = (value or "").strip().lower()
+    if not txt:
+        return ""
+    txt = "".join(
+        c for c in unicodedata.normalize("NFD", txt)
+        if unicodedata.category(c) != "Mn"
+    )
+    txt = _PUNCT_RE.sub(" ", txt)
+    txt = _SPACE_RE.sub(" ", txt).strip()
+    return txt
+
+
+def _tokenize_nombre(value: str) -> list[str]:
+    tokens = []
+    for tok in _normalize_nombre_producto(value).split():
+        if len(tok) <= 2:
+            continue
+        if tok in _STOPWORDS or tok in _PREFIXES:
+            continue
+        tokens.append(tok)
+    return tokens
+
+
+def _score_nombre_match(input_nombre: str, candidate_nombre: str) -> float:
+    """Score heurístico [0..1] entre nombre entrante y nombre de catálogo."""
+    in_norm = _normalize_nombre_producto(input_nombre)
+    cand_norm = _normalize_nombre_producto(candidate_nombre)
+    if not in_norm or not cand_norm:
+        return 0.0
+
+    if in_norm == cand_norm:
+        return 1.0
+
+    in_tokens = set(_tokenize_nombre(in_norm))
+    cand_tokens = set(_tokenize_nombre(cand_norm))
+    token_overlap = 0.0
+    if in_tokens and cand_tokens:
+        token_overlap = len(in_tokens & cand_tokens) / len(in_tokens | cand_tokens)
+
+    contains_bonus = 0.0
+    if in_norm in cand_norm or cand_norm in in_norm:
+        contains_bonus = 0.2
+
+    seq_ratio = SequenceMatcher(None, in_norm, cand_norm).ratio()
+    score = (0.55 * token_overlap) + (0.45 * seq_ratio) + contains_bonus
+    return min(score, 1.0)
+
+
+def _lookup_diccionario_form_name(conn, db_name: str, nombre: str) -> Optional[dict]:
+    """Busca una corrección en adm.DiccionarioFormName por nombre normalizado.
+
+    La tabla existe en producción y QA. La reutilizamos como diccionario de
+    alias editoriales de formularios: si el `Error` coincide, devolvemos el
+    `Correcto` para seguir resolviendo el producto.
+    """
+    tbl = f"[{db_name}].adm.DiccionarioFormName"
+    sql = text(
+        f"""
+        SELECT TOP (1) Error, Correcto
+        FROM {tbl}
+        WHERE Activo = 1
+        ORDER BY Id DESC
+        """
+    )
+    try:
+        target = _normalize_nombre_producto(nombre)
+        if not target:
+            return None
+        rows = conn.execute(sql).mappings().all()
+        best_row = None
+        best_len = -1
+        for row in rows:
+            error_norm = _normalize_nombre_producto(row.get("Error") or "")
+            if not error_norm:
+                continue
+            if error_norm == target or error_norm in target or target in error_norm:
+                if len(error_norm) > best_len:
+                    best_row = row
+                    best_len = len(error_norm)
+        return dict(best_row) if best_row else None
+    except SQLAlchemyError as exc:
+        logger.warning("Error consultando DiccionarioFormName en %s: %s", db_name, exc)
+        return None
+
+
+def _search_producto_por_token_exacto(conn, db_name: str, token: str) -> Optional[dict]:
+    """Busca un producto por token exacto en Nombre, CodigoLanzamiento o CodigoLinkedin."""
+    tbl = f"[{db_name}].adm.Producto"
+    sql = text(
+        f"""
+        SELECT TOP (1) Id, Nombre, CodigoLanzamiento, CodigoLinkedin, CostoBase
+        FROM {tbl}
+        WHERE (
+            LTRIM(RTRIM(Nombre)) COLLATE DATABASE_DEFAULT = LTRIM(RTRIM(:token)) COLLATE DATABASE_DEFAULT
+            OR LTRIM(RTRIM(CodigoLanzamiento)) COLLATE DATABASE_DEFAULT = LTRIM(RTRIM(:token)) COLLATE DATABASE_DEFAULT
+            OR LTRIM(RTRIM(CodigoLinkedin)) COLLATE DATABASE_DEFAULT = LTRIM(RTRIM(:token)) COLLATE DATABASE_DEFAULT
+        )
+          AND Estado = 1
+        ORDER BY Id DESC
+        """
+    )
+    row = conn.execute(sql, {"token": token}).mappings().first()
+    return dict(row) if row else None
+
+
+def _search_producto_fuzzy_en_db(conn, db_name: str, nombre: str) -> Optional[dict]:
+    """Fallback tolerante para variaciones de naming en formularios de WP."""
+    from config import ESTADO_PRODUCTO_TIPOS_PERMITIDOS
+
+    tbl = f"[{db_name}].adm.Producto"
+    sql = text(
+        f"""
+        SELECT Id, Nombre, CodigoLanzamiento, CodigoLinkedin, CostoBase
+        FROM {tbl}
+        WHERE Estado = 1
+          AND EstadoProductoTipoId IN :tipos
+        ORDER BY Id DESC
+        """
+    ).bindparams(bindparam("tipos", expanding=True))
+
+    rows = conn.execute(sql, {"tipos": list(ESTADO_PRODUCTO_TIPOS_PERMITIDOS)}).mappings().all()
+    if not rows:
+        return None
+
+    best_row = None
+    best_score = 0.0
+    for row in rows:
+        score = _score_nombre_match(nombre, row.get("Nombre") or "")
+        if score > best_score:
+            best_score = score
+            best_row = row
+
+    # Umbral conservador para evitar matches incorrectos.
+    if not best_row or best_score < 0.62:
+        return None
+
+    d = dict(best_row)
+    d["_match_step"] = "fuzzy"
+    d["_match_score"] = round(best_score, 4)
+    d["_db"] = db_name
+    return d
 
 
 def _build_sqlalchemy_url() -> str:
@@ -192,14 +351,28 @@ def fetch_producto_por_nombre(nombre: str) -> Optional[dict]:
     local_db = DB_CONFIG["database"]
     try:
         with get_engine().connect() as conn:
-            # Paso 1: buscar en catálogo autoritativo
-            catalogo = _search_producto_en_db(conn, PRODUCTS_DB_NAME, clean)
+            # Paso 0: diccionario de alias editoriales / formas del formulario.
+            alias = _lookup_diccionario_form_name(conn, PRODUCTS_DB_NAME, clean)
+            if alias and alias.get("Correcto"):
+                clean = (alias["Correcto"] or "").strip() or clean
+                logger.info(
+                    "Nombre '%s' resuelto via DiccionarioFormName -> '%s'",
+                    nombre, clean,
+                )
+
+            # Paso 1: buscar en catálogo autoritativo por token exacto o patrón.
+            catalogo = _search_producto_por_token_exacto(conn, PRODUCTS_DB_NAME, clean)
+            if not catalogo:
+                catalogo = _search_producto_en_db(conn, PRODUCTS_DB_NAME, clean)
+            if not catalogo:
+                catalogo = _search_producto_fuzzy_en_db(conn, PRODUCTS_DB_NAME, clean)
             if not catalogo:
                 return None
 
             logger.info(
-                "Producto en catálogo (%s) paso=%s id=%s nombre='%s' (buscado: '%s')",
+                "Producto en catálogo (%s) paso=%s score=%s id=%s nombre='%s' (buscado: '%s')",
                 PRODUCTS_DB_NAME, catalogo["_match_step"],
+                catalogo.get("_match_score"),
                 catalogo["Id"], catalogo["Nombre"], clean,
             )
 

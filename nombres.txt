@@ -1,0 +1,169 @@
+PEP Dirección en Arquitectura Estratégica 5.0 /?page_id=251687 
+PEP Gestión integral de proyectos mineros /?page_id=251621 
+PEP Design Thinking con IA aplicado a Ingenieria y Operaciones /?page_id=251305 
+PEP Advance Pricing Analytics /?page_id=251307 
+Producción Audiovisual Estratégica /?page_id=250974 
+Design Systems con Figma e IA /?page_id=250901 
+CEP Ethical Hacking /?page_id=250629 
+PEP Design Thinking con IA aplicado a Ingenieria y Operaciones /?page_id=250625 
+Plantilla_curso_taller /plantilla_curso_taller-2/ 
+seguridad del paciente y gestión de la calidad asistencial /seguridad-del-paciente-y-gestion-de-la-calidad-asistencial/ 
+gestión del talento humano 4.0 /gestion-del-talento-humano-4-0/ 
+Relaciones Comunitarias y Gestión de Conflictos Socioambientales /relaciones-comunitarias-y-gestion-de-conflictos-socioambientales/ 
+Director Comercial /director-comercial/ 
+gerente en gestión del talento humano /?page_id=243052 
+analista en gestión del talento humano /?page_id=243045 
+auxiliar en gestión del talento humano /?page_id=243042 
+PAE Consultor Corporativo en Derecho Aduanero y Comercial Internacional /derecho-aduanero-y-comercial-internacional/ 
+gestión estratégica de recursos de recursos humanos /?page_id=242915 
+Dirección de Procesos y Mejora Continua con Lean Manufacturing, Six Sigma y Analítica Avanzada /direccion-de-procesos-con-lean-manufacturing-y-six-sigma/ 
+people management 4.0 /people-management-4-0/ 
+Mantenimiento Basado en la Confiabilidad con Power BI /mantenimiento-basado-en-la-confiabilidad-con-power-bi/ 
+Gerente en Mantenimiento /gerente-en-mantenimiento/ 
+Planeación Estratégica y Gestión de Proyectos de TI /planeacion-estrategica-y-gestion-de-proyectos-de-ti/ 
+Supervisor en Mantenimiento /supervisor-en-mantenimiento/ 
+Planner en Mantenimiento con MS Project /planner-en-mantenimiento/ 
+Employee experience /?page_id=242528 
+Analista de Datos con Power BI y Python /analista-de-datos-con-power-bi-y-python/ 
+Gerencia Financiera /gerencia-financiera/ 
+Controller Financiero /controller-financiero/ 
+Gestión Hospitalaria Integral /gestion-hospitalaria-integral/ 
+Planner Financiero con Análisis de Datos /planner-financiero-con-analisis-de-datos/ 
+Mantenimiento 4.0 /mantenimiento-4-0/ 
+Agentes y Prompt Engineering con IA Generativa /agentes-y-prompt-engineering-con-ia-generativa/ 
+Gerente de Finanzas Corporativas 4.0 /finanzas-corporativas-con-power-bi/ 
+Gerencia de Producción 4.0 /gerencia-de-produccion-4-0/ 
+Gestión de Recursos Humanos 4.0 /recursos-humanos-4-0/ 
+Producción Inteligente con Power BI /produccion-inteligente-con-power-bi/ 
+Mantenimiento basado en datos con Power BI /?page_id=241840 
+PAE – Digital Twins e Inteligencia Artificial Aplicada a la Construcción /plantilla_curso_taller/ 
+CEP de IA Aplicado al Mantenimiento /?page_id=241569 
+CEP Power BI Aplicado al Mantenimiento /?page_id=241565 
+PEP– Construcción Carbono Cero (Net Zero) /pep-construccion-carbono-cero-net-zero/ 
+Gestión Integrada HSE y Cumplimiento ISO 14001 & OHSAS 18001 (SGSI) /pae-gestion-integrada-hse-y-cumplimiento-iso-14001-ohsas-18001-sgsi/ 
+PEP Director de Estrategias Clínicas: Aplicaciones Avanzadas y Adaptaciones en Terapia EMDR. /pae-director-de-estrategias-clinicas-aplicaciones-avanzadas-y-adaptaciones-en-terapia-emdr/ 
+CEP Entrenamiento Clínico en Terapia de reprocesamiento EMDR /cep-entrenamiento-clinico-en-terapia-de-reprocesamiento-emdr/ 
+INNOVACION Y SOSTENIBILIDAD EN LA GESTION DE RELAVES MINEROS /innovacion-y-sostenibilidad-en-la-gestion-de-relaves-mineros-2/ 
+ESPECIALISTA EN GESTION DE RELAVES MINEROS BASADOS EN INNOVACION Y SOSTENIBILIDAD /innovacion-y-sostenibilidad-en-la-gestion-de-relaves-mineros/ 
+PEP Gerente de Gestión Integral de la Inocuidad Alimentaria /pep-gerente-de-gestion-integral-de-la-inocuidad-alimentaria/ 
+PAE Arquitecto de Soluciones IoT para la Transformación Digital /pae-arquitecto-de-soluciones-iot-para-la-transformacion-digital/ 
+Especialista en Seguridad Patrimonial y Cuidado del personal /especialista-en-seguridad-patrimonial-y-cuidado-del-personal/ 
+PAE Revit BIM – Arquitectura, Estructuras y MEP /pae-revit-bim-arquitectura-estructuras-y-mep-3/ 
+Spanish as a foreign language /spanish-as-a-foreign-language/ 
+gerencia agropecuaria /gerencia-agropecuaria/ 
+PEP Gerente LEED en Construcción Sostenible /construccion-sostenible/ 
+Gerente en Construcción /gerente-en-construccion/ 
+Implementador Líder ISO 27001:2022 /implementador-lider-iso-270012022/ 
+Analista de Datos con Fabric, Power BI y Python /analista-de-datos-con-fabric-power-bi-y-python/ 
+Director de Marketing y Ventas /director-de-marketing-y-ventas/ 
+alta dirección en okrs y business analytics /gerente-de-estrategia-y-okrs-para-la-ejecucion-empresarial/ 
+gerente de excelencia operacional en lean manufacturing & lean six sigma 4.0 /gerente-de-excelencia-operacional-en-lean-manufacturing-lean-six-sigma-4-0/ 
+gerencia en seguridad y salud ocupacional /gerencia-en-seguridad-y-salud-ocupacional/ 
+gerencia de producción y automatización 4.0 /gerencia-de-produccion-y-automatizacion-4-0/ 
+gerencia de producción y transformación 4.0 /gerencia-de-produccion-y-transformacion-4-0/ 
+Gerente de Créditos y Cobranzas /gerente-de-creditos-y-cobranzas/ 
+Especialista en Customer Experience /especialista-en-customer-experience/ 
+líder en automatización de procesos industriales 4.0 /lider-en-automatizacion-de-procesos-industriales-4-0/ 
+gerente lean six sigma 4.0 /gerente-lean-six-sigma-4-0/ 
+analista lean six sigma 4.0 /analista-lean-six-sigma-4-0/ 
+gerente de producción estratégica y excelencia operacional /gerente-de-produccion-estrategica-y-excelencia-operacional/ 
+gerente de supply chain y logística Inteligente con odoo erp /gerente-de-supply-chain-y-logistica-inteligente-con-odoo-erp/ 
+director ejecutivo en supply chain y last mile /director-ejecutivo-en-supply-chain-y-last-mile/ 
+gerente certificado en riesgos críticos – bow tie /pae-gerente-certificado-en-riesgos-criticos-bow-tie/ 
+especialista en innovación ágil, kpis y transformación digital de procesos /especialista-en-innovacion-y-rediseno-de-procesos-con-design-thinking/ 
+líder estratégico de producción inteligente 4.0 /pae-lider-estrategico-de-produccion-inteligente-4-0/ 
+director de s&op y transformación empresarial /director-de-sop-y-transformacion-empresarial/ 
+manager en lean management y transformación digital de procesos /manager-en-lean-management-y-transformacion-digital-de-procesos/ 
+Gerente de Construcción /gerente-de-construccion/ 
+analista en teledetección y sig ambiental /analista-en-teledeteccion-y-sig-ambiental/ 
+people analytics manager /gestor-en-people-analytics/ 
+implementador lean six sigma 4.0 /pae-programa-360-lean-six-sigma-4-0/ 
+Gerente de Proyectos de Construcción /gerente-de-proyectos-de-construccion/ 
+Bootcamp TOEFL iBT /bootcamp-toefl-ibt/ 
+Product Manager /product-manager/ 
+gestión de recursos humanos 4.0 /gestion-de-recursos-humanos-4-0/ 
+Auditor Financiero /auditor-financiero/ 
+Gerente de Proyectos Mineros con MS Project y RecMin /gerente-de-proyectos-mineros-con-ms-project-y-recmin/ 
+Agricultura de Precisión y Analítica de Datos Agrícolas /agricultura-de-precision-y-analitica-de-datos-agricolas/ 
+PEP Dirección Estratégica de Storytelling Audiovisual para Marcas y Empresas /direccion-estrategica-de-storytelling-audiovisual-para-marcas-y-empresas/ 
+Certified Professional Personal Trainer (CPPT) /certified-professional-personal-trainer-cppt/ 
+Gerente de Proyectos Mineros con MS Project y Promine /gerente-de-proyectos-mineros-con-ms-project-y-promine/ 
+PEP Gestión Integral de Riesgos Organizacionales /pep-gestion-integral-de-riesgos-organizacionales/ 
+Gerente de Proyectos Mineros con Primavera P6 y Promine /gerente-de-proyectos-mineros-con-primavera-p6-y-promine/ 
+Master Business Analytics & Data Strategy /master-business-analytics-y-data-strategy/ 
+PAE Gerente en Desarrollo y Gestión de Franquicias Escalables /gerente-de-desarrollo-y-gestion-de-franquicias-esca/ 
+AI Agent Builder /ai-agent-builder/ 
+CEP – Scan to BIM con LiDAR e IA /cep-scan-to-bim-con-lidar-e-ia/ 
+CEP Ethical hacking /cep-ethical-hacking/ 
+CEP Gerente de Inspección Infrarroja y Estrategias de Inteligencia Térmica 4.0 /cep-gerente-de-inspeccion-infrarroja-y-estrategias-de-inteligencia-termica-4-0/ 
+PAE Gerente de Estrategias de Monitoreo Online y Análisis Vibracional 4.0 /pae-gerente-de-estrategias-de-monitoreo-online-y-analisis-vibracional-4-0/ 
+CEP Líder de Implementación de Mantenimiento Predictivo 4.0 /cep-lider-de-implementacion-de-mantenimiento-predictivo-4-0/ 
+PAE Gerente de ESG y Riesgos Ambientales en Minería /pae-gerente-de-esg-y-riesgos-ambientales-en-mineria/ 
+PEP Especialista en Fundamentos y Practica Clinica de ACT /pep-especialista-en-fundamentos-y-practica-clinica-de-act/ 
+PAE - Reporting Financiero Estratégico y KPIs para Alta Dirección Minera /pae-reporting-financiero-estrategico-y-kpis-para-alta-direccion-minera/ 
+PEP Arquitecto de Sistemas de Productos Inteligentes /pep-diseno-estrategico-de-productos-inteligentes-para-gerentes-de-innovacion-y-desarrollo-de-producto/ 
+PAE Contabilidad 4.0: Big Data y Analítica para Finanzas y Control /pae-contabilidad-4-0-big-data-y-analitica-para-finanzas-y-control/ 
+CEP Power BI para OPEX, CAPEX y Control Presupuestario en Minería /cep-power-bi-para-opex-capex-y-control-presupuestario-en-mineria/ 
+PEP Design Thinking con IA aplicado a Ingenieria y Operaciones /pep-design-thinking-con-ia-aplicado-a-ingenieria-y-operaciones/ 
+PEP Gerente de Flujos Colaborativos e Ingeniería de Software con Git y GitHub /pep-gerente-de-flujos-colaborativos-e-ingenieria-de-software-con-git-y-github/ 
+CEP Power BI avançado aplicado à manutenção - Português /cep-power-bi-avancado-aplicado-a-manutencao-portugues/ 
+CEP - Envolventes Arquitectónicas de Alto Desempeño. /cep-envolventes-arquitectonicas-de-alto-desempeno/ 
+PAE Liderazgo Estratégico en Economía Circular e Innovación Sostenible (ISO 59000 & ACV) /pae-liderazgo-estrategico-en-economia-circular-e-innovacion-sostenible-iso-59000-acv/ 
+PAE CEO Global Real Estate: Estrategia y Dirección de Inversión Cross-Border /249851-2/ 
+PEP - Manufactura Aditiva Metálica para la Alta Dirección: Estrategia, Implementación y ROI /pep-manufactura-aditiva-metalica-para-la-alta-direccion-estrategia-implementacion-y-roi/ 
+PAE Data Architect /pae-data-architect/ 
+PAE Data Engineer /pae-data-engineer/ 
+PAE Gerente en Gestion de Seguridad Informática /pae-curso-en-gestion-estrategica-de-ciberseguridad/ 
+PEP Construcción Sostenible bajo estándares LEED /pep-construccion-sostenible-bajo-estandares-leed/ 
+PEP - Costos y Finanzas aplicadas a Proyectos mineros /pep-costos-y-finanzas-aplicadas-a-proyectos-mineros/ 
+CEP Implementador y Auditor Interno en Gestión de la Energia ISO 50001 /cep-implementador-y-auditor-interno-en-gestion-de-la-energia-iso-50001/ 
+PEP – Innovación Tecnológica Aplicada al Diseño Interior. /pep-innovacion-tecnologica-aplicadas-al-diseno-interior/ 
+PEP Lean Service - Optimización de Proceso de Servicios /pep-lean-service-optimizacion-de-proceso-de-servicios/ 
+PEP Minería 4.0 Programación, Geología y Geometalurgia /pep-mineria-4-0-programacion-geologia-y-geometalurgia/ 
+CEP Ingeniería en Innovación Sistémica /cep-ingenieria-en-innovacion-sistemica/ 
+Ejecutivo en Gestión de la Calidad ISO 9001 /ejecutivo-en-gestion-de-la-calidad-iso-9001/ 
+Gestión Financiera Internacional basada en NIIF /gestion-financiera-internacional-basada-en-niif/ 
+PAE – BIM MEP: Modelado, Coordinación y Gestión de Instalaciones en Proyectos de Construcción /pae-bim-mep-modelado-coordinacion-y-gestion-de-instalaciones-en-proyectos-de-construccion/ 
+PAE – Digital Twins e Inteligencia Artificial Aplicada a la Construcción /pae-digital-twins-e-inteligencia-artificial-aplicada-a-la-construccion/ 
+PEP- Desarrollo de competencias profesionales para especialistas del sector construcción. /pep-desarrollo-de-competencias-profesionales-para-especialistas-del-sector-construccion/ 
+Finanzas Corporativas con Power BI /cep-finanzas-corporativas-con-power-bi/ 
+PAE Gerente en Gestión Estratégica y Analítica de Supply Chain Managers /pae-gerente-en-gestion-estrategica-y-analitica-de-supply-chain-managers-2/ 
+CEP Project Manager en Arquitectura (BIM + IA) /cep-project-manager-en-arquitectura-bim-ia/ 
+Especialista de Importación y Compras Internacionales /especialista-de-importacion-y-compras-internacionales/ 
+PAE Gerente de Planta: IA, Power BI y Gestión Integral /pae-gerente-de-planta-ia-power-bi-y-gestion-integral/ 
+CEP Manutenção 4.0 /cep-manutencao-4-0/ 
+CEP Project Controls: Primavera P6, EVM, DCMA y Power BI. /cep-project-controls-primavera-p6-evm-dcma-y-power-bi/ 
+PEP Gerente en Construcción Industrializada /pep-gerente-en-construccion-industrializada/ 
+PEP IA aplicada a la Interpretación Sísmica y Modelado de Cuencas /pep-ia-aplicada-a-la-interpretacion-sismica-y-modelado-de-cuencas/ 
+CEP Dirección Estratégica de Acuíferos y Seguridad Hídrica Industrial /cep-direccion-estrategica-de-acuiferos-y-seguridad-hidrica-industrial/ 
+PEP Gestión Integral del Litio: Tecnología, Hidrogeología y Mercados Globales /pep-gestion-integral-del-litio-tecnologia-hidrogeologia-y-mercados-globales/ 
+Gerente de Desarrollo de Proyectos Inmobiliarios /gerente-de-desarrollo-de-proyectos-inmobiliarios/ 
+PAE Gerente Comercial con mención en Análisis de Datos /pae-gerente-comercial-con-mencion-en-analisis-de-datos/ 
+PAE Gerente Comercial con Mención en Finanzas /pae-gerente-comercial-con-mencion-en-finanzas/ 
+Gerente Comercial con mención en Marketing /gerente-comercial-con-mencion-en-marketing/ 
+Gerente de Mantenimiento con Mención en Industria Petrolera (Oil & Gas) /gerente-de-mantenimiento-con-mencion-en-industria-petrolera-oil-gas/ 
+Gerente de Mantenimiento con Mención en Equipos Electromecánicos /gerente-de-mantenimiento-con-mencion-en-equipos-electromecanicos/ 
+PEP Gerente Comercial con Power BI /gerente-comercial/ 
+PEP SmartPLS 4 aplicado a Investigación, Tesis y Análisis de Datos Avanzado /pep-smartpls-4-aplicado-a-investigacion-tesis-y-analisis-de-datos-avanzado/ 
+PEP Gerente en Estrategia Arquitectónica /pep-gerente-en-estrategia-arquitectonica/ 
+(sin título) /estructuraciondedeudas/ 
+Gerente de Proyectos de Energía Fotovoltaica /gerente-de-proyectos-de-energia-fotovoltaica/ 
+Gerente en Energías Renovables y Transición Energética /gerente-en-energias-renovables-y-transicion-energetica/ 
+Gerente Estratégico del Mantenimiento de Flota Pesada /gerente-estrategico-del-mantenimiento-de-flota-pesada/ 
+Key Account Manager /key-account-manager/ 
+Especialista en Instalación y Gestión de Plantas Solares Fotovoltaicas. /especialista-en-instalacion-y-gestion-de-plantas-solares-fotovoltaicas/ 
+PAE Gestión Estratégica del Riesgo de Desastres, Continuidad Operativa y Respuesta a Emergencias Alineado a ISO 22301 /pae-gestion-estrategica-del-riesgo-de-desastres-continuidad-operativa-y-respuesta-a-emergencias-alineado-a-iso-22301/ 
+Diagnóstico Avanzado de Sistemas Hidráulicos y Electrónicos en Maquinaria Pesada /diagnostico-avanzado-de-sistemas-hidraulicos-y-electronicos-en-maquinaria-pesada/ 
+Controller de Flotas y Telemetría Multimarca /controller-de-flotas-y-telemetria-multimarca/ 
+Lean Construction & BIM Management /lean-construction-bim-management/ 
+PEP - Control de Costos y Gestión Financiera Aplicada /cost-controller/ 
+PAE en Automatización Industrial con PLC ,HMI y SCADA – TIA Portal Siemens. /pae-en-automatizacion-industrial-con-plc-hmi-y-scada-tia-portal-siemens/ 
+PEP - Advanced Pricing Analytics /pricing-analytics/ 
+Gerente de Gestión de Activos e Infraestructura bajo ISO 55001. /gerente-de-gestion-de-activos-e-infraestructura-bajo-iso-55001/ 
+Gerencia en Relaciones Comunitarias y Gestión de Conflictos Sociales /gerencia-en-relaciones-comunitarias-y-gestion-de-conflictos-sociales/ 
+Gerente en Economía Circular para la Construcción /gerente-en-economia-circular-para-la-construccion/ 
+Primeros Auxilios Psicológicos e Intervención en Crisis Suicida /primeros-auxilios-psicologicos-e-intervencion-en-crisis-suicida/ 
+CEP Gobernanza IA & Gestión de Sistemas según ISO/IEC 42001:2023 /cep-gobernanza-ia-gestion-de-sistemas-segun-iso-iec-420012023/ 
+Gerente de Descarbonización y Eficiencia Eléctrica /gerente-de-descarbonizacion-y-eficiencia-electrica/ 
+NeuroWellbeing: Especialista en Bienestar y Alto Desempeño /neurowellbeing-especialista-en-bienestar-y-alto-desempeno/ 
+Dirección Estratégica de RRHH Data-Driven /direccion-estrategica-de-rrhh-data-driven/ 
