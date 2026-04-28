@@ -33,6 +33,24 @@ try:
     
     conn.commit()
     print()
+
+    # Script 3: Potential Applicants Table
+    print('='*70)
+    print('EXECUTING: 003_Wordpress_Postulante_Potencial.sql')
+    print('='*70)
+    with open('sql/003_Wordpress_Postulante_Potencial.sql', 'r') as f:
+        script3 = f.read()
+
+    for statement in script3.split('GO'):
+        if statement.strip():
+            try:
+                cur.execute(statement)
+                print('✓ Statement executed')
+            except Exception as e:
+                print(f'⚠ {e}')
+
+    conn.commit()
+    print()
     
     # Script 2: Generic Product
     print('='*70)
@@ -59,6 +77,10 @@ try:
     cur.execute("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='Wordpress_Lead_Pendiente'")
     if cur.fetchone()[0]:
         print('✓ adm.Wordpress_Lead_Pendiente exists')
+
+    cur.execute("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='Wordpress_Postulante_Potencial'")
+    if cur.fetchone()[0]:
+        print('✓ adm.Wordpress_Postulante_Potencial exists')
     
     cur.execute("SELECT COUNT(*) FROM adm.Producto WHERE CodigoLanzamiento='PROD-GENERICO-WP2' AND Estado=1")
     count = cur.fetchone()[0]

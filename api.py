@@ -11,14 +11,16 @@ import secrets
 from pathlib import Path
 from typing import Any
 
-from fastapi import Depends, FastAPI, Header, HTTPException, Request, status
+from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, Request, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 
 from config import CORS_ORIGINS, WORDPRESS_API_KEY
 from models.wordpress_lead import WordpressLeadPayload
+from models.wordpress_applicant import WordpressApplicantPayload
 from models.wordpress_lead_generic import WordpressLeadGenericPayload
 from services import request_log
+from services.applicant_service import create_wordpress_applicant
 from services.lead_generic_service import process_wordpress_generic_lead
 from services.lead_service import process_wordpress_lead
 
@@ -301,6 +303,109 @@ async def create_lead_generic(request: Request):
             },
         )
     raise HTTPException(status_code=500, detail=f"Resultado no reconocido: {outcome}")
+
+
+@app.post(
+    "/postulantes",
+    dependencies=[Depends(require_api_key)],
+    summary="Recibe formulario de postulante y lo guarda en BD.",
+)
+async def create_postulante(
+    nombre_completo: str = Form(...),
+    correo_electronico: str = Form(...),
+    area_postulacion: str = Form(...),
+    cv_pdf: UploadFile | None = File(default=None),
+):
+    """Recibe un postulante potencial desde WordPress y lo persiste.
+
+    Form-data esperado:
+      - nombre_completo
+      - correo_electronico
+      - area_postulacion
+      - cv_pdf (opcional, PDF)
+    """
+    raw_payload: dict[str, Any] = {
+        "nombre_completo": nombre_completo,
+        "correo_electronico": correo_electronico,
+        "area_postulacion": area_postulacion,
+        "cv_pdf_filename": cv_pdf.filename if cv_pdf else None,
+    }
+
+    try:
+        payload = WordpressApplicantPayload.model_validate(raw_payload)
+    except Exception as exc:
+        errors = getattr(exc, "errors", lambda: [{"msg": str(exc)}])()
+        request_log.record(
+            endpoint="/postulantes",
+            payload_raw=raw_payload,
+            http_status=422,
+            result="invalid",
+            message="Payload inválido: " + "; ".join(
+                f"{'.'.join(str(x) for x in e.get('loc', []))}: {e.get('msg', '')}"
+                for e in errors
+            ),
+        )
+        raise HTTPException(status_code=422, detail=errors)
+
+    cv_nombre_archivo = None
+    cv_mime_type = None
+    cv_contenido = None
+
+    if cv_pdf is not None:
+        cv_nombre_archivo = (cv_pdf.filename or "").strip()
+        if not cv_nombre_archivo:
+            raise HTTPException(status_code=422, detail="El archivo CV no tiene nombre.")
+        if not cv_nombre_archivo.lower().endswith(".pdf"):
+            raise HTTPException(status_code=422, detail="El CV debe ser un archivo PDF (.pdf).")
+
+        cv_contenido = await cv_pdf.read()
+        if not cv_contenido:
+            raise HTTPException(status_code=422, detail="El archivo CV está vacío.")
+        if len(cv_contenido) > 10 * 1024 * 1024:
+            raise HTTPException(status_code=413, detail="El CV excede el límite de 10 MB.")
+
+        cv_mime_type = (cv_pdf.content_type or "application/pdf")[:100]
+
+    try:
+        postulante_id = create_wordpress_applicant(
+            payload=payload,
+            cv_nombre_archivo=cv_nombre_archivo,
+            cv_mime_type=cv_mime_type,
+            cv_contenido=cv_contenido,
+        )
+    except Exception as exc:
+        logger.exception("Error guardando postulante potencial")
+        request_log.record(
+            endpoint="/postulantes",
+            payload_raw=raw_payload,
+            http_status=500,
+            result="error",
+            message=f"Error interno: {exc}",
+        )
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error interno guardando postulación: {exc}",
+        )
+
+    request_log.record(
+        endpoint="/postulantes",
+        payload_raw={
+            **raw_payload,
+            "cv_pdf_bytes": len(cv_contenido) if cv_contenido else 0,
+        },
+        http_status=201,
+        result="created",
+        message="Postulación guardada correctamente.",
+    )
+
+    return JSONResponse(
+        status_code=201,
+        content={
+            "status": "created",
+            "postulante_id": postulante_id,
+            "message": "Postulación guardada correctamente.",
+        },
+    )
 
 
 # ── Observabilidad en localhost ──────────────────────────────────────────────
