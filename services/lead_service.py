@@ -21,9 +21,14 @@ traduce a HTTP 5xx).
 import logging
 from typing import Any
 
+from config import (
+    GENERIC_PRODUCTO_CODIGO_LANZAMIENTO,
+    GENERIC_PRODUCTO_ID,
+)
 from db_connector import (
     exists_oportunidad_activa,
     fetch_pais_por_prefijo,
+    fetch_producto_generico,
     fetch_producto_por_nombre,
     get_connection,
 )
@@ -72,18 +77,30 @@ def process_wordpress_lead(payload: WordpressLeadPayload) -> dict[str, Any]:
 
     # ── 3) Producto ───────────────────────────────────────────────────────────
     producto = fetch_producto_por_nombre(payload.nombre_capacitacion)
+    nombre_capacitacion_original = None
     if producto is None:
-        return _save_as_pending_full(
-            payload=payload,
-            nombres=name_split.nombres,
-            apellidos=name_split.apellidos,
-            id_pais=id_pais,
-            codigo_pais=phone.codigo_pais,
-            celular=phone.celular,
-            motivo=(
-                "Sin match en adm.Producto (Nombre, Estado=1, "
-                "EstadoProductoTipoId en 17/19/20)"
-            ),
+        # Sin match: WordPress siempre crea oportunidad (alta conversión).
+        # Usamos el producto genérico y guardamos el nombre original para trazabilidad.
+        nombre_capacitacion_original = payload.nombre_capacitacion
+        producto = fetch_producto_generico(
+            producto_id=GENERIC_PRODUCTO_ID,
+            codigo_lanzamiento=GENERIC_PRODUCTO_CODIGO_LANZAMIENTO,
+        )
+        if producto is None:
+            return _save_as_pending_full(
+                payload=payload,
+                nombres=name_split.nombres,
+                apellidos=name_split.apellidos,
+                id_pais=id_pais,
+                codigo_pais=phone.codigo_pais,
+                celular=phone.celular,
+                motivo=(
+                    "Sin match en adm.Producto y producto genérico no configurado"
+                ),
+            )
+        logger.info(
+            "Sin match para '%s' → usando producto genérico id=%s",
+            nombre_capacitacion_original, producto["Id"],
         )
     if producto.get("_sync_missing"):
         # El producto existe en el catálogo autoritativo pero no en la DB local.
@@ -132,7 +149,9 @@ def process_wordpress_lead(payload: WordpressLeadPayload) -> dict[str, Any]:
         id_pais            = id_pais,
         producto_id        = int(producto["Id"]),
         codigo_lanzamiento = producto["CodigoLanzamiento"],
-        costo_base         = float(producto["CostoBase"]) if producto.get("CostoBase") is not None else None,
+        costo_base         = None if nombre_capacitacion_original else (
+            float(producto["CostoBase"]) if producto.get("CostoBase") is not None else None
+        ),
         fecha_formulario   = payload.fecha_formulario,
     )
 
@@ -144,7 +163,7 @@ def process_wordpress_lead(payload: WordpressLeadPayload) -> dict[str, Any]:
         result.oportunidad_id, result.persona_id,
         producto["CodigoLanzamiento"], result.auto_assigned_personal_id,
     )
-    return {
+    response = {
         "result":              "created",
         "oportunidad_id":      result.oportunidad_id,
         "persona_id":          result.persona_id,
@@ -152,6 +171,10 @@ def process_wordpress_lead(payload: WordpressLeadPayload) -> dict[str, Any]:
         "auto_assigned_personal_id": result.auto_assigned_personal_id,
         "producto_match":      _producto_brief(producto),
     }
+    if nombre_capacitacion_original:
+        response["nombre_capacitacion_original"] = nombre_capacitacion_original
+        response["producto_generico"] = True
+    return response
 
 
 # ── Helpers: guardar en pendientes ────────────────────────────────────────────
