@@ -67,6 +67,14 @@ class WordpressLeadPayload(BaseModel):
         default=None,
         validation_alias=AliasChoices("fecha_formulario", "fechaFormulario"),
     )
+    comentario: Optional[str] = Field(
+        default=None,
+        max_length=1000,
+        validation_alias=AliasChoices(
+            "comentario", "Comentario", "comment", "comments",
+            "mensaje", "Mensaje", "observacion", "nota",
+        ),
+    )
 
     @field_validator("nombre_capacitacion", "nombres_apellidos")
     @classmethod

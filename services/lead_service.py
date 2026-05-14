@@ -140,6 +140,14 @@ def process_wordpress_lead(payload: WordpressLeadPayload) -> dict[str, Any]:
         }
 
     # ── 5) Pipeline transaccional ─────────────────────────────────────────────
+    nota: str | None = None
+    if nombre_capacitacion_original:
+        nota_parts = [f"Página: {nombre_capacitacion_original[:200]}"]
+        comentario = (getattr(payload, "comentario", None) or "").strip()
+        if comentario:
+            nota_parts.append(f"Comentario: {comentario[:300]}")
+        nota = " | ".join(nota_parts)
+
     opp_input = OpportunityInput(
         nombres            = name_split.nombres,
         apellidos          = name_split.apellidos,
@@ -153,6 +161,7 @@ def process_wordpress_lead(payload: WordpressLeadPayload) -> dict[str, Any]:
             float(producto["CostoBase"]) if producto.get("CostoBase") is not None else None
         ),
         fecha_formulario   = payload.fecha_formulario,
+        nota               = nota,
     )
 
     with get_connection() as conn:

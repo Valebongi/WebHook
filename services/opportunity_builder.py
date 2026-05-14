@@ -48,6 +48,7 @@ class OpportunityInput:
     codigo_lanzamiento: str
     costo_base:         Optional[float]
     fecha_formulario:   Optional[datetime]
+    nota:               Optional[str] = None  # va en HistorialEstado.Observaciones
 
 
 @dataclass
@@ -98,6 +99,7 @@ def create_opportunity(conn: pyodbc.Connection, inp: OpportunityInput) -> Opport
         opp_id=opp_id,
         now=now,
         id_personal=prior["PriorIdPersonal"] if prior else None,
+        nota=inp.nota,
     )
 
     # ── 6) Log de auto-asignación (si aplicó) ────────────────────────────────
@@ -272,7 +274,11 @@ def _insert_historial_estado(
     opp_id: int,
     now: datetime,
     id_personal: Optional[int],
+    nota: Optional[str] = None,
 ) -> int:
+    base_obs = "Registrado (importado desde formulario Wordpress)"
+    observaciones = f"{base_obs} | {nota}" if nota else base_obs
+    observaciones = observaciones[:500]
     cur.execute(
         """
         INSERT INTO adm.HistorialEstado
@@ -280,11 +286,11 @@ def _insert_historial_estado(
              CantidadLlamadasContestadas, CantidadLlamadasNoContestadas,
              Estado, FechaCreacion, UsuarioCreacion, FechaModificacion, UsuarioModificacion)
         OUTPUT inserted.Id
-        VALUES (?, ?, ?, ?, ?, N'Registrado (importado desde formulario Wordpress)',
+        VALUES (?, ?, ?, ?, ?, ?,
                 0, 0, 1, ?, ?, ?, ?)
         """,
         opp_id, DEFAULT_IDASESOR, DEFAULT_IDESTADO_INICIAL, DEFAULT_IDOCURRENCIA,
-        id_personal, now, AUDIT_USER, now, AUDIT_USER,
+        id_personal, observaciones, now, AUDIT_USER, now, AUDIT_USER,
     )
     row = cur.fetchone()
     return int(row[0])
